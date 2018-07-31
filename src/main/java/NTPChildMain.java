@@ -31,11 +31,15 @@ public class NTPChildMain {
                 System.out.println("TS2 established!");
                 outToServer.writeBytes("MSG2" + '\n');
 
-                while((serverSentence = inFromServer.readLine()) != null) {
-                    if(serverSentence.equals("TS1"))
-                        ts1 = Long.valueOf(inFromServer.readLine());
-                    else if(serverSentence.equals("TR2"))
+                serverSentence = inFromServer.readLine();
+                if(serverSentence.equals("TS1")) {
+                    ts1 = Long.valueOf(inFromServer.readLine());
+                    System.out.println("TS1 recieved");
+                    serverSentence = inFromServer.readLine();
+                    if(serverSentence.equals("TR2")) {
                         tr2 = Long.valueOf(inFromServer.readLine());
+                        System.out.println("TR2 recieved");
+                    }
                 }
             }
             ts2 = ts2_date.getTime() - start_date.getTime();
