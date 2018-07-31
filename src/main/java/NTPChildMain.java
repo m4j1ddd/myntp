@@ -10,18 +10,37 @@ public class NTPChildMain {
         if(args.length >= 2) {
             String ip = args[0];
             int port = Integer.valueOf(args[1]);
-            String modifiedSentence;
+            String serverSentence;
+            Date start_date, tr1_date, ts2_date = null;
+            long ts1 = 0, tr1, ts2, tr2 = 0;
 
             Socket clientSocket = new Socket(ip, port);
             DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
             BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
-            Date start_date = new Date();
-            System.out.println("Start at:" + start_date.toString());
-            System.out.println("Start at:" + start_date.toString());
+            start_date = new Date();
+            System.out.println("Started!");
             outToServer.writeBytes("start" + '\n');
-            modifiedSentence = inFromServer.readLine();
-            System.out.println("FROM SERVER: " + modifiedSentence);
+
+            serverSentence = inFromServer.readLine();
+            tr1_date = new Date();
+            if(serverSentence.equals("MSG1")) {
+                System.out.println("TR1 established!");
+
+                ts2_date = new Date();
+                System.out.println("TS2 established!");
+                outToServer.writeBytes("MSG2" + '\n');
+
+                while((serverSentence = inFromServer.readLine()) != null) {
+                    if(serverSentence.equals("TS1"))
+                        ts1 = Long.valueOf(inFromServer.readLine());
+                    else if(serverSentence.equals("TR2"))
+                        tr2 = Long.valueOf(inFromServer.readLine());
+                }
+            }
+            ts2 = ts2_date.getTime() - start_date.getTime();
+            tr1 = tr1_date.getTime() - start_date.getTime();
+            System.out.println("TS1 = " + ts1 + ", TR1 = " + tr1 + ", TS2 = " + ts2 + ", TR2 = " + tr2);
             clientSocket.close();
         }
     }
