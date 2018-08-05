@@ -20,7 +20,7 @@ public class NTPParent extends Thread {
     @Override
     public void run() {
         String clientSentence;
-        Date start_date, ts1_date, tr2_date;
+        Date ts1_date, tr2_date;
         long ts1, tr2;
         try {
             Socket connectionSocket = serverSocket.accept();
@@ -28,7 +28,6 @@ public class NTPParent extends Thread {
             DataOutputStream outToClient = new DataOutputStream(connectionSocket.getOutputStream());
 
             clientSentence = inFromClient.readLine();
-            start_date = new Date();
             if(clientSentence.equals("start")) {
                 System.out.println("NTP Started!");
                 ts1_date = new Date();
@@ -40,8 +39,8 @@ public class NTPParent extends Thread {
                 if(clientSentence.equals("MSG2")) {
                     System.out.println("TR2 established!");
 
-                    ts1 = ts1_date.getTime() - start_date.getTime();
-                    tr2 = tr2_date.getTime() - start_date.getTime();
+                    ts1 = ts1_date.getTime();
+                    tr2 = tr2_date.getTime();
                     outToClient.writeBytes("TS1" + '\n' + ts1 + '\n' + "TR2" + '\n' + tr2 + '\n');
                 }
             }

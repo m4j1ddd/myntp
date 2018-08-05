@@ -31,14 +31,13 @@ public class NTPChild {
     }
 
     public long calc_offset() throws IOException {
-        Date ntp_start_date, tr1_date, ts2_date = null;
+        Date tr1_date, ts2_date = null;
         long ts1 = 0, tr1, ts2, tr2 = 0, o;
         String serverSentence;
         Socket clientSocket = new Socket(ip, port);
         DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
         BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
-        ntp_start_date = new Date();
         System.out.println("NTP Started!");
         outToServer.writeBytes("start" + '\n');
 
@@ -62,8 +61,8 @@ public class NTPChild {
                 }
             }
         }
-        ts2 = ts2_date.getTime() - ntp_start_date.getTime();
-        tr1 = tr1_date.getTime() - ntp_start_date.getTime();
+        ts2 = ts2_date.getTime();
+        tr1 = tr1_date.getTime();
         System.out.println("TS1 = " + ts1 + ", TR1 = " + tr1 + ", TS2 = " + ts2 + ", TR2 = " + tr2);
         o = (tr1 - tr2 + ts2 - ts1)/2;
 
