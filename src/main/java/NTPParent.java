@@ -7,7 +7,7 @@ import java.net.Socket;
 import java.util.Date;
 
 public class NTPParent extends Thread {
-    ServerSocket serverSocket;
+    private ServerSocket serverSocket;
 
     public NTPParent(int port) throws IOException {
         this.serverSocket = new ServerSocket(port);

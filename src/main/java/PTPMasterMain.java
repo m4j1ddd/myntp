@@ -7,8 +7,8 @@ import java.util.*;
 
 public class PTPMasterMain {
     public static void main(String[] args) throws IOException {
-        if(args.length >= 3) {
-            new PTPMaster(Integer.valueOf(args[0]), args[1], Integer.valueOf(args[2]));
+        if(args.length >= 1) {
+            new PTPMaster(Integer.valueOf(args[0])).run();
         }
     }
 }

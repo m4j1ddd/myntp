@@ -2,36 +2,29 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
 
-public class PTPMasterServer extends Thread {
-    ServerSocket serverSocket;
+public class PTPMasterReceiver extends Thread {
+    private Socket connectionSocket;
 
-    public PTPMasterServer(int port) throws IOException {
-        serverSocket = new ServerSocket(port);
-    }
-
-    public PTPMasterServer(ServerSocket serverSocket) {
-        this.serverSocket = serverSocket;
+    public PTPMasterReceiver(Socket socket) {
+        connectionSocket = socket;
     }
 
     public void run() {
+        Date t4_date;
         try {
             while(true) {
-                Socket connectionSocket = serverSocket.accept();
-                BufferedReader inFromSlave = new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
                 DataOutputStream outToSlave = new DataOutputStream(connectionSocket.getOutputStream());
+                BufferedReader inFromSlave = new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
                 String slaveSentence;
-
                 slaveSentence = inFromSlave.readLine();
-                Date t4_date = new Date();
-                if(slaveSentence.equals("Delay_Req")) {
+                if (slaveSentence.equals("Delay_Req")) {
+                    t4_date = new Date();
                     System.out.println("T4 established!");
                     outToSlave.writeBytes("Delay_Resp" + '\n' + t4_date.getTime() + '\n');
                 }
-                connectionSocket.close();
             }
         } catch (IOException e) {
             e.printStackTrace();

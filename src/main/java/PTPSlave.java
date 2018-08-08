@@ -1,50 +1,26 @@
-import com.sun.webkit.ThemeClient;
-
 import java.io.IOException;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
 public class PTPSlave extends Thread {
-    int slave_port;
-    String master_ip;
-    int master_port;
+    private PTPSlaveReceiver ptpSlaveReceiver;
+    private PTPSlaveSender ptpSlaveSender;
 
-    public PTPSlave(int slave_port, String master_ip, int master_port) {
-        this.slave_port = slave_port;
-        this.master_ip = master_ip;
-        this.master_port = master_port;
+    public PTPSlave(String ip, int port) throws IOException {
+        Socket connectionSocket = new Socket(ip, port);
+        ptpSlaveReceiver = new PTPSlaveReceiver(connectionSocket);
+        ptpSlaveSender = new PTPSlaveSender(connectionSocket);
     }
 
-    public int getSlave_port() {
-        return slave_port;
+    public long getMsDifference() {
+        return ptpSlaveReceiver.getT2() - ptpSlaveReceiver.getT1();
     }
 
-    public void setSlave_port(int slave_port) {
-        this.slave_port = slave_port;
-    }
-
-    public String getMaster_ip() {
-        return master_ip;
-    }
-
-    public void setMaster_ip(String master_ip) {
-        this.master_ip = master_ip;
-    }
-
-    public int getMaster_port() {
-        return master_port;
-    }
-
-    public void setMaster_port(int master_port) {
-        this.master_port = master_port;
+    public long getSmDifference() {
+        return ptpSlaveReceiver.getT4() - ptpSlaveSender.getT3();
     }
 
     public void run() {
-        try {
-            new PTPSlaveServer(slave_port).run();
-            new PTPSlaveClient(master_ip, master_port).run();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        ptpSlaveReceiver.run();
+        ptpSlaveSender.run();
     }
 }

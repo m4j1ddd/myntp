@@ -8,8 +8,8 @@ import java.util.*;
 
 public class PTPSlaveMain {
     public static void main(String[] args) throws IOException {
-        if(args.length >= 3) {
-            new PTPSlave(Integer.valueOf(args[0]), args[1], Integer.valueOf(args[2])).run();
+        if(args.length >= 2) {
+            new PTPSlave(args[0], Integer.valueOf(args[1])).run();
         }
     }
 }

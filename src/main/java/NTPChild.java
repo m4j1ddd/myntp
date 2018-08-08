@@ -6,8 +6,8 @@ import java.net.Socket;
 import java.util.Date;
 
 public class NTPChild {
-    String ip;
-    int port;
+    private String ip;
+    private int port;
 
     public NTPChild(String ip, int port) {
         this.ip = ip;
