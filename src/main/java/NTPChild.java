@@ -41,6 +41,11 @@ public class NTPChild {
         return rtt;
     }
 
+    public long calc_receive_time(long ts2) {
+        long tr2 = ts2 + (rtt/2) - offset;
+        return tr2;
+    }
+
     public long calc_offset() throws IOException {
         Date tr1_date, ts2_date = null;
         long ts1 = 0, tr1, ts2, tr2 = 0;

@@ -22,7 +22,20 @@ public class NTPParent extends Thread {
         rtt = 0;
     }
 
+    public long calc_recieve_time(long ts1) {
+        long tr1 = ts1 + (rtt/2) + offset;
+        return tr1;
+    }
 
+    public long calc_send_time_on_child(long tr2) {
+        long ts2 = tr2 - (rtt/2) + offset;
+        return ts2;
+    }
+
+    public long calc_send_time_on_parent(long tr2) {
+        long tss2 = tr2 - (rtt/2);
+        return tss2;
+    }
 
     @Override
     public void run() {
