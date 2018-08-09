@@ -20,16 +20,16 @@ public class PTPSlaveSender extends Thread {
 
     public void run() {
         try {
-            while (true) {
+            while (connectionSocket.isConnected()) {
                 DataOutputStream outToMaster = new DataOutputStream(connectionSocket.getOutputStream());
 
                 Date t3_date = new Date();
                 System.out.println("T3 established!");
-                outToMaster.writeBytes("Delay_Req" + '\n');
+                if(!connectionSocket.isOutputShutdown()) outToMaster.writeBytes("Delay_Req" + '\n');
 
                 t3 = t3_date.getTime();
 
-                sleep(120000);
+                sleep(6000);
             }
         } catch (InterruptedException e) {
             e.printStackTrace();

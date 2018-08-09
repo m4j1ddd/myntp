@@ -8,7 +8,7 @@ import java.util.*;
 public class PTPMasterMain {
     public static void main(String[] args) throws IOException {
         if(args.length >= 1) {
-            new PTPMaster(Integer.valueOf(args[0])).run();
+            new PTPMaster(Integer.valueOf(args[0])).start();
         }
     }
 }

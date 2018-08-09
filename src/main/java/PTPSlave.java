@@ -19,8 +19,12 @@ public class PTPSlave extends Thread {
         return ptpSlaveReceiver.getT4() - ptpSlaveSender.getT3();
     }
 
+    public long getOffset() {
+        return (getMsDifference() - getSmDifference())/2;
+    }
+
     public void run() {
-        ptpSlaveReceiver.run();
-        ptpSlaveSender.run();
+        ptpSlaveReceiver.start();
+        ptpSlaveSender.start();
     }
 }

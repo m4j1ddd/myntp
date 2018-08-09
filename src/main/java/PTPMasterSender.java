@@ -15,13 +15,13 @@ public class PTPMasterSender extends Thread {
 
     public void run() {
         try {
-            while(true) {
+            while(connectionSocket.isConnected()) {
                 DataOutputStream outToSlave = new DataOutputStream(connectionSocket.getOutputStream());
 
                 Date t1_date = new Date();
                 System.out.println("T1 established");
-                outToSlave.writeBytes("Sync" + '\n');
-                outToSlave.writeBytes("Follow_Up" + '\n' + t1_date.getTime() + '\n');
+                if(!connectionSocket.isOutputShutdown()) outToSlave.writeBytes("Sync" + '\n');
+                if(!connectionSocket.isOutputShutdown()) outToSlave.writeBytes("Follow_Up" + '\n' + t1_date.getTime() + '\n');
 
                 sleep(2000);
             }

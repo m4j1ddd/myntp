@@ -32,23 +32,23 @@ public class PTPSlaveReceiver extends Thread {
     public void run() {
         Date t2_date;
         try {
-            while(true) {
+            while(connectionSocket.isConnected()) {
                 BufferedReader inFromMaster = new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
-                String masterSentence;
+                String masterSentence = null;
 
-                masterSentence = inFromMaster.readLine();
-                if(masterSentence.equals("Sync")) {
-                    t2_date = new Date();
-                    t2 = t2_date.getTime();
-                    System.out.println("T2 established!");
-                }
-                else if(masterSentence.equals("Follow_Up")) {
-                    masterSentence = inFromMaster.readLine();
-                    t1 = Long.valueOf(masterSentence);
-                }
-                else if(masterSentence.equals("Delay_Resp")) {
-                    masterSentence = inFromMaster.readLine();
-                    t4 = Long.valueOf(masterSentence);
+                if(!connectionSocket.isInputShutdown()) masterSentence = inFromMaster.readLine();
+                if(masterSentence != null) {
+                    if (masterSentence.equals("Sync")) {
+                        t2_date = new Date();
+                        t2 = t2_date.getTime();
+                        System.out.println("T2 established!");
+                    } else if (masterSentence.equals("Follow_Up")) {
+                        if(!connectionSocket.isInputShutdown()) masterSentence = inFromMaster.readLine();
+                        t1 = Long.valueOf(masterSentence);
+                    } else if (masterSentence.equals("Delay_Resp")) {
+                        if(!connectionSocket.isInputShutdown()) masterSentence = inFromMaster.readLine();
+                        t4 = Long.valueOf(masterSentence);
+                    }
                 }
             }
         } catch (IOException e) {
