@@ -8,6 +8,7 @@ public class NTPChildMain {
             NTPChild ntpChild = new NTPChild(ip, port);
             System.out.println("offset = " + ntpChild.calc_offset() + ", rtt = " + ntpChild.calc_rtt());
             ntpChild.send_or();
+            System.out.println(ntpChild.calc_time());
         }
     }
 }

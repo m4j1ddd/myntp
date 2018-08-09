@@ -8,7 +8,7 @@ import java.util.Date;
 public class NTPChild {
     private String ip;
     private int port;
-    private long offset, rtt;
+    private long offset, rtt, time;
 
     public NTPChild(String ip, int port) {
         this.ip = ip;
@@ -105,6 +105,30 @@ public class NTPChild {
 
         clientSocket.close();
         return rtt;
+    }
+
+    public long calc_time() throws IOException {
+        Date rtt_start_date, rtt_date;
+        long rtt = 0, time = 0;
+        String serverSentence;
+        Socket clientSocket = new Socket(ip, port);
+        DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
+        BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+
+        rtt_start_date = new Date();
+        System.out.println("Cristian Started!");
+        outToServer.writeBytes("TIME" + '\n');
+        serverSentence = inFromServer.readLine();
+        if(serverSentence.equals("TIME")) {
+            rtt_date = new Date();
+            rtt = rtt_date.getTime() - rtt_start_date.getTime();
+            serverSentence = inFromServer.readLine();
+            time = Long.valueOf(serverSentence);
+            System.out.println("TIME calculated!");
+        }
+
+        clientSocket.close();
+        return time + (rtt/2);
     }
 
     public void send_or() throws IOException {
