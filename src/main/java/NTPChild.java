@@ -8,10 +8,13 @@ import java.util.Date;
 public class NTPChild {
     private String ip;
     private int port;
+    private long offset, rtt;
 
     public NTPChild(String ip, int port) {
         this.ip = ip;
         this.port = port;
+        this.offset = 0;
+        this.rtt = 0;
     }
 
     public String getIp() {
@@ -30,9 +33,17 @@ public class NTPChild {
         this.port = port;
     }
 
+    public long getOffset() {
+        return offset;
+    }
+
+    public long getRtt() {
+        return rtt;
+    }
+
     public long calc_offset() throws IOException {
         Date tr1_date, ts2_date = null;
-        long ts1 = 0, tr1, ts2, tr2 = 0, o;
+        long ts1 = 0, tr1, ts2, tr2 = 0;
         String serverSentence;
         Socket clientSocket = new Socket(ip, port);
         DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
@@ -64,15 +75,14 @@ public class NTPChild {
         ts2 = ts2_date.getTime();
         tr1 = tr1_date.getTime();
         System.out.println("TS1 = " + ts1 + ", TR1 = " + tr1 + ", TS2 = " + ts2 + ", TR2 = " + tr2);
-        o = (tr1 - tr2 + ts2 - ts1)/2;
+        offset = (tr1 - tr2 + ts2 - ts1)/2;
 
         clientSocket.close();
-        return o;
+        return offset;
     }
 
     public long calc_rtt() throws IOException {
         Date rtt_start_date, rtt_date;
-        long rtt = 0;
         String serverSentence;
         Socket clientSocket = new Socket(ip, port);
         DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
@@ -90,5 +100,12 @@ public class NTPChild {
 
         clientSocket.close();
         return rtt;
+    }
+
+    public void send_or() throws IOException {
+        Socket clientSocket = new Socket(ip, port);
+        DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
+        outToServer.writeBytes("OR" + '\n' + offset + '\n' + rtt);
+        clientSocket.close();
     }
 }

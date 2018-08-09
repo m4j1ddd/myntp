@@ -11,7 +11,7 @@ public class NTPParentMain {
         if(args.length >= 1) {
             int port = Integer.valueOf(args[0]);
             NTPParent ntpParent = new NTPParent(port);
-            ntpParent.run();
+            ntpParent.start();
         }
     }
 }

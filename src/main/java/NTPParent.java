@@ -8,14 +8,21 @@ import java.util.Date;
 
 public class NTPParent extends Thread {
     private ServerSocket serverSocket;
+    private long offset, rtt;
 
     public NTPParent(int port) throws IOException {
         this.serverSocket = new ServerSocket(port);
+        offset = 0;
+        rtt = 0;
     }
 
     public NTPParent(ServerSocket serverSocket) {
         this.serverSocket = serverSocket;
+        offset = 0;
+        rtt = 0;
     }
+
+
 
     @Override
     public void run() {
@@ -46,6 +53,11 @@ public class NTPParent extends Thread {
                     }
                 } else if (clientSentence.equals("RTT")) {
                     outToClient.writeBytes(clientSentence + '\n');
+                } else if(clientSentence.equals("OR")) {
+                    offset = Long.valueOf(inFromClient.readLine());
+                    rtt = Long.valueOf(inFromClient.readLine());
+                    System.out.println("OFFSET and RTT received");
+
                 }
                 connectionSocket.close();
             }

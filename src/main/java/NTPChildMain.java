@@ -7,6 +7,7 @@ public class NTPChildMain {
             int port = Integer.valueOf(args[1]);
             NTPChild ntpChild = new NTPChild(ip, port);
             System.out.println("offset = " + ntpChild.calc_offset() + ", rtt = " + ntpChild.calc_rtt());
+            ntpChild.send_or();
         }
     }
 }
