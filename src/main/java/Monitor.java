@@ -7,7 +7,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class Monitor {
+public class Monitor extends Thread {
     ServerSocket serverSocket;
     ArrayList<Message> messages;
     int total_count;

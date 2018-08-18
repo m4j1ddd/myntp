@@ -31,7 +31,7 @@ public class MonitorMain {
     public static void main(String[] args) throws IOException {
         if(args.length >= 1) {
             Monitor monitor = new Monitor(Integer.valueOf(args[0]));
-            monitor.run();
+            monitor.start();
             Scanner scanner = new Scanner(System.in);
             while(scanner.hasNext()) {
                 String command = scanner.next();
