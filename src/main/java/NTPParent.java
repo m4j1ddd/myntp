@@ -69,12 +69,12 @@ public class NTPParent extends Thread {
                 } else if(clientSentence.equals("TIME")) {
                     Date date = new Date();
                     Long time = date.getTime();
+                    System.out.println("time = " + time + " date = " + date);
                     outToClient.writeBytes("TIME" + '\n' + time + '\n');
                 } else if(clientSentence.equals("OR")) {
                     offset = Long.valueOf(inFromClient.readLine());
                     rtt = Long.valueOf(inFromClient.readLine());
                     System.out.println("OFFSET and RTT received");
-
                 }
                 connectionSocket.close();
             }

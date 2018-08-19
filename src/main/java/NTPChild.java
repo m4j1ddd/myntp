@@ -8,7 +8,7 @@ import java.util.Date;
 public class NTPChild {
     private String ip;
     private int port;
-    private long offset, rtt, time;
+    private long offset, rtt;
 
     public NTPChild(String ip, int port) {
         this.ip = ip;
