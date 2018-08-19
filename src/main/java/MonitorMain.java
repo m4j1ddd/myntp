@@ -21,12 +21,19 @@ public class MonitorMain {
         monitor_socket.close();
     }
 
+    public static void send_sync_time(long time) throws IOException {
+        Socket monitor_socket = new Socket(monitor_ip, monitor_port);
+        DataOutputStream outToMonitor = new DataOutputStream(monitor_socket.getOutputStream());
+        outToMonitor.writeBytes("sync" + '\n' + time + '\n');
+        monitor_socket.close();
+    }
+
     public static void main(String[] args) throws IOException {
         if(args.length >= 1) {
             Monitor monitor = new Monitor(Integer.valueOf(args[0]));
             monitor.run();
             Scanner scanner = new Scanner(System.in);
-            if(scanner.hasNext()) {
+            while(scanner.hasNext()) {
                 String command = scanner.next();
                 if(command.equals("print")) {
                     monitor.print();

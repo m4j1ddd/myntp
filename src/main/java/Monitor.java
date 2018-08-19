@@ -5,23 +5,22 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Scanner;
+import java.util.*;
 
 public class Monitor {
     ServerSocket serverSocket;
     ArrayList<Message> messages;
     int total_count;
+    Map<String, Long> sync_times;
 
     public Monitor(int port) throws IOException {
         serverSocket = new ServerSocket(port);
         messages = new ArrayList<Message>();
         total_count = 0;
+        sync_times = new HashMap<String, Long>();
     }
 
-    public void print_sorted() {
+    public void print_msgs_sorted() {
         DateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy hh:mm:ss.SSS");
         Collections.sort(messages, new Comparator<Message>() {
             @Override
@@ -35,9 +34,20 @@ public class Monitor {
         }
     }
 
+    public void print_sync_times() {
+        DateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy hh:mm:ss.SSS");
+        for(Map.Entry<String, Long> entry : sync_times.entrySet()) {
+            String ip = entry.getKey();
+            Long time = entry.getValue();
+            Date sync_date = new Date(time);
+            System.out.println("IP: " + ip + ", Sync date: " + dateFormat.format(sync_date));
+        }
+    }
+
     public void print() {
-        print_sorted();
+        print_msgs_sorted();
         System.out.println("Total number of messages for synchronization: " + total_count);
+        print_sync_times();
     }
 
     public void run() {
@@ -59,6 +69,11 @@ public class Monitor {
                 else if(clientSentence.equals("count")) {
                     int count = Integer.valueOf(inFromClient.readLine());
                     total_count += count;
+                }
+                else if(clientSentence.equals("sync")) {
+                    String ip = connectionSocket.getRemoteSocketAddress().toString();
+                    long time = Long.valueOf(inFromClient.readLine());
+                    sync_times.put(ip, time);
                 }
                 connectionSocket.close();
             }

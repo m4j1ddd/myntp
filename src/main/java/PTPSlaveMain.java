@@ -17,14 +17,14 @@ public class PTPSlaveMain {
             PTPSlave ptpSlave = new PTPSlave(args[0], Integer.valueOf(args[1]));
             ptpSlave.start();
             while(true) {
-                sleep(10000);
-
                 long offset = ptpSlave.getOffset();
                 System.out.println("offset = " + offset);
                 Date old_date = new Date();
                 Date date = new Date(old_date.getTime() + offset);
                 Runtime.getRuntime().exec(new String[] {"/bin/sh", "-c","sudo date --set=\""+ dateFormat.format(date) +"\""});
                 System.out.println("date = " + dateFormat.format(date));
+                MonitorMain.send_sync_time(date.getTime());
+                sleep(10000);
             }
         }
     }
