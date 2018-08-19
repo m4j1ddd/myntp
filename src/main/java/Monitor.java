@@ -36,11 +36,14 @@ public class Monitor extends Thread {
 
     public void print_sync_times() {
         DateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy hh:mm:ss.SSS");
+        int i = 0;
         for(Map.Entry<String, Long> entry : sync_times.entrySet()) {
+            if(i >= 10) break;
             String ip = entry.getKey();
             Long time = entry.getValue();
             Date sync_date = new Date(time);
             System.out.println("IP: " + ip + ", Sync date: " + dateFormat.format(sync_date));
+            i++;
         }
     }
 
