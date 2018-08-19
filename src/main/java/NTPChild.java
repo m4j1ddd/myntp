@@ -3,6 +3,8 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class NTPChild {
@@ -49,6 +51,7 @@ public class NTPChild {
     public long calc_offset() throws IOException {
         Date tr1_date, ts2_date = null;
         long ts1 = 0, tr1, ts2, tr2 = 0;
+        DateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy hh:mm:ss.SSS");
         String serverSentence;
         Socket clientSocket = new Socket(ip, port);
         DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
@@ -79,6 +82,9 @@ public class NTPChild {
         }
         ts2 = ts2_date.getTime();
         tr1 = tr1_date.getTime();
+        Date ts1_date = new Date(ts1);
+        Date tr2_date = new Date(tr2);
+        System.out.println("TS1 date: " + dateFormat.format(ts1_date) + " TR1 date: " + dateFormat.format(tr1_date) + " TS2 date: " + dateFormat.format(ts2_date) + " TR2 date: " + dateFormat.format(tr2_date));
         System.out.println("TS1 = " + ts1 + ", TR1 = " + tr1 + ", TS2 = " + ts2 + ", TR2 = " + tr2);
         offset = (tr1 - tr2 + ts2 - ts1)/2;
 

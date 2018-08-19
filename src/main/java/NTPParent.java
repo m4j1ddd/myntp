@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class NTPParent extends Thread {
@@ -42,6 +44,7 @@ public class NTPParent extends Thread {
         String clientSentence;
         Date ts1_date, tr2_date;
         long ts1, tr2;
+        DateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy hh:mm:ss.SSS");
         try {
             while(true) {
                 Socket connectionSocket = serverSocket.accept();
@@ -62,6 +65,7 @@ public class NTPParent extends Thread {
 
                         ts1 = ts1_date.getTime();
                         tr2 = tr2_date.getTime();
+                        System.out.println("TS1 date: " + dateFormat.format(ts1_date) + "TR2 date: " + dateFormat.format(tr2_date));
                         outToClient.writeBytes("TS1" + '\n' + ts1 + '\n' + "TR2" + '\n' + tr2 + '\n');
                     }
                 } else if (clientSentence.equals("RTT")) {
@@ -69,7 +73,7 @@ public class NTPParent extends Thread {
                 } else if(clientSentence.equals("TIME")) {
                     Date date = new Date();
                     Long time = date.getTime();
-                    System.out.println("time = " + time + " date = " + date);
+                    System.out.println("time = " + time + " date = " + dateFormat.format(date));
                     outToClient.writeBytes("TIME" + '\n' + time + '\n');
                 } else if(clientSentence.equals("OR")) {
                     offset = Long.valueOf(inFromClient.readLine());

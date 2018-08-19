@@ -41,18 +41,26 @@ public class NTPChildMain {
             String ip = args[0];
             int port = Integer.valueOf(args[1]);
             String command = args[2];
-            DateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy hh:mm:ss");
+            DateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy hh:mm:ss.SSS");
             NTPChild ntpChild = new NTPChild(ip, port);
             if(command.equals("ntp")) {
-                System.out.println("offset = " + ntpChild.calc_offset() + ", rtt = " + ntpChild.calc_rtt());
-                ntpChild.send_or();
+                while(true) {
+                    long offset = ntpChild.calc_offset();
+                    System.out.println("offset = " + offset);
+                    Date old_date = new Date();
+                    long time = old_date.getTime() - offset;
+                    Date date = new Date(time);
+                    Runtime.getRuntime().exec(new String[] {"/bin/sh", "-c","sudo date --set=\""+ dateFormat.format(date) +"\""});
+                    System.out.println("date = " + dateFormat.format(date));
+                    sleep(20000);
+                }
             }
             else if(command.equals("cristian")) {
                 while(true) {
                     long time = ntpChild.calc_time();
                     Date date = new Date(time);
                     Runtime.getRuntime().exec(new String[] {"/bin/sh", "-c","sudo date --set=\""+ dateFormat.format(date) +"\""});
-                    System.out.println("time = " + time + " date = " + date);
+                    System.out.println("time = " + time + " date = " + dateFormat.format(date));
                     sleep(60000);
                 }
             }
