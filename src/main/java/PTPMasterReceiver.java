@@ -29,6 +29,7 @@ public class PTPMasterReceiver extends Thread {
                     System.out.println("T4 date = " + dateFormat.format(t4_date));
                     if(!connectionSocket.isOutputShutdown()) outToSlave.writeBytes("Delay_Resp" + '\n' + t4_date.getTime() + '\n');
                 }
+                MonitorMain.send_count(1);
             }
         } catch (IOException e) {
             e.printStackTrace();

@@ -89,6 +89,7 @@ public class NTPChild {
         offset = (tr1 - tr2 + ts2 - ts1)/2;
 
         clientSocket.close();
+        MonitorMain.send_count(4);
         return offset;
     }
 
@@ -134,6 +135,7 @@ public class NTPChild {
         }
 
         clientSocket.close();
+        MonitorMain.send_count(2);
         return time + (rtt/2);
     }
 

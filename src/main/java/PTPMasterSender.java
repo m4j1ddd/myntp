@@ -27,6 +27,7 @@ public class PTPMasterSender extends Thread {
                 System.out.println("T1 date = " + dateFormat.format(t1_date));
                 if(!connectionSocket.isOutputShutdown()) outToSlave.writeBytes("Follow_Up" + '\n' + t1_date.getTime() + '\n');
 
+                MonitorMain.send_count(2);
                 sleep(2000);
             }
         } catch (IOException e) {

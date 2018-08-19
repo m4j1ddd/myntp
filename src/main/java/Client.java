@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.*;
 
 public class Client extends Thread {
     ServerSocket serverSocket;
@@ -29,7 +30,9 @@ public class Client extends Thread {
     public void sendMessage(String ip, int port, String msg) throws IOException {
         Socket socket = new Socket(ip, port);
         DataOutputStream outToOther = new DataOutputStream(socket.getOutputStream());
+        Date send_date = new Date();
         outToOther.writeBytes(msg + '\n');
         socket.close();
+        MonitorMain.send_msg_time(send_date.getTime(), msg);
     }
 }

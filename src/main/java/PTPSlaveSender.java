@@ -32,6 +32,7 @@ public class PTPSlaveSender extends Thread {
                 System.out.println("T3 date = " + dateFormat.format(t3_date));
                 t3 = t3_date.getTime();
 
+                MonitorMain.send_count(1);
                 sleep(6000);
             }
         } catch (InterruptedException e) {
