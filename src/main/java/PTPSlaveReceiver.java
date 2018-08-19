@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class PTPSlaveReceiver extends Thread {
@@ -31,6 +33,7 @@ public class PTPSlaveReceiver extends Thread {
 
     public void run() {
         Date t2_date;
+        DateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy hh:mm:ss.SSS");
         try {
             while(connectionSocket.isConnected()) {
                 BufferedReader inFromMaster = new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
@@ -42,6 +45,7 @@ public class PTPSlaveReceiver extends Thread {
                         t2_date = new Date();
                         t2 = t2_date.getTime();
                         System.out.println("T2 established!");
+                        System.out.println("T2 date = " + dateFormat.format(t2_date));
                     } else if (masterSentence.equals("Follow_Up")) {
                         if(!connectionSocket.isInputShutdown()) masterSentence = inFromMaster.readLine();
                         t1 = Long.valueOf(masterSentence);
