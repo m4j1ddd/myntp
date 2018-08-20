@@ -6,10 +6,13 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
 
-public class NTPParentMain {
+public class TimeServerMain {
     public static void main(String[] args) throws IOException {
         if(args.length >= 1) {
+            TimeCounter.getInstance().start();
+
             int port = Integer.valueOf(args[0]);
+
             NTPParent ntpParent = new NTPParent(port);
             ntpParent.start();
         }

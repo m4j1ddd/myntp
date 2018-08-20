@@ -42,9 +42,8 @@ public class NTPParent extends Thread {
     @Override
     public void run() {
         String clientSentence;
-        Date ts1_date, tr2_date;
+
         long ts1, tr2;
-        DateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy hh:mm:ss.SSS");
         try {
             while(true) {
                 Socket connectionSocket = serverSocket.accept();
@@ -54,26 +53,23 @@ public class NTPParent extends Thread {
                 clientSentence = inFromClient.readLine();
                 if (clientSentence.equals("start")) {
                     System.out.println("NTP Started!");
-                    ts1_date = new Date();
+                    ts1 = TimeCounter.getInstance().getTime();
                     System.out.println("TS1 established!");
                     outToClient.writeBytes("MSG1" + '\n');
 
                     clientSentence = inFromClient.readLine();
-                    tr2_date = new Date();
+                    tr2 = TimeCounter.getInstance().getTime();
                     if (clientSentence.equals("MSG2")) {
                         System.out.println("TR2 established!");
 
-                        ts1 = ts1_date.getTime();
-                        tr2 = tr2_date.getTime();
-                        System.out.println("TS1 date: " + dateFormat.format(ts1_date) + "TR2 date: " + dateFormat.format(tr2_date));
+                        System.out.println("TS1: " + ts1 + "TR2:" + tr2);
                         outToClient.writeBytes("TS1" + '\n' + ts1 + '\n' + "TR2" + '\n' + tr2 + '\n');
                     }
                 } else if (clientSentence.equals("RTT")) {
                     outToClient.writeBytes(clientSentence + '\n');
                 } else if(clientSentence.equals("TIME")) {
-                    Date date = new Date();
-                    Long time = date.getTime();
-                    System.out.println("time = " + time + " date = " + dateFormat.format(date));
+                    Long time = TimeCounter.getInstance().getTime();
+                    System.out.println("time = " + time);
                     outToClient.writeBytes("TIME" + '\n' + time + '\n');
                 } else if(clientSentence.equals("OR")) {
                     offset = Long.valueOf(inFromClient.readLine());

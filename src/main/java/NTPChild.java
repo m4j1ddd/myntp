@@ -10,13 +10,10 @@ import java.util.Date;
 public class NTPChild {
     private String ip;
     private int port;
-    private long offset, rtt;
 
     public NTPChild(String ip, int port) {
         this.ip = ip;
         this.port = port;
-        this.offset = 0;
-        this.rtt = 0;
     }
 
     public String getIp() {
@@ -35,23 +32,8 @@ public class NTPChild {
         this.port = port;
     }
 
-    public long getOffset() {
-        return offset;
-    }
-
-    public long getRtt() {
-        return rtt;
-    }
-
-    public long calc_receive_time(long ts2) {
-        long tr2 = ts2 + (rtt/2) - offset;
-        return tr2;
-    }
-
-    public long calc_offset() throws IOException {
-        Date tr1_date, ts2_date = null;
-        long ts1 = 0, tr1, ts2, tr2 = 0;
-        DateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy hh:mm:ss.SSS");
+    public long run_ntp() throws IOException {
+        long ts1 = 0, tr1, ts2 = 0, tr2 = 0;
         String serverSentence;
         Socket clientSocket = new Socket(ip, port);
         DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
@@ -61,11 +43,11 @@ public class NTPChild {
         outToServer.writeBytes("start" + '\n');
 
         serverSentence = inFromServer.readLine();
-        tr1_date = new Date();
+        tr1 = TimeCounter.getInstance().getTime();
         if(serverSentence.equals("MSG1")) {
             System.out.println("TR1 established!");
 
-            ts2_date = new Date();
+            ts2 = TimeCounter.getInstance().getTime();
             System.out.println("TS2 established!");
             outToServer.writeBytes("MSG2" + '\n');
 
@@ -80,55 +62,29 @@ public class NTPChild {
                 }
             }
         }
-        ts2 = ts2_date.getTime();
-        tr1 = tr1_date.getTime();
-        Date ts1_date = new Date(ts1);
-        Date tr2_date = new Date(tr2);
-        System.out.println("TS1 date: " + dateFormat.format(ts1_date) + " TR1 date: " + dateFormat.format(tr1_date) + " TS2 date: " + dateFormat.format(ts2_date) + " TR2 date: " + dateFormat.format(tr2_date));
+
         System.out.println("TS1 = " + ts1 + ", TR1 = " + tr1 + ", TS2 = " + ts2 + ", TR2 = " + tr2);
-        offset = (tr1 - tr2 + ts2 - ts1)/2;
+        long offset = (tr1 - tr2 + ts2 - ts1)/2;
 
         clientSocket.close();
         MonitorMain.send_count(4);
         return offset;
     }
 
-    public long calc_rtt() throws IOException {
-        Date rtt_start_date, rtt_date;
+    public long run_cristian() throws IOException {
+        long time = 0;
         String serverSentence;
         Socket clientSocket = new Socket(ip, port);
         DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
         BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
-        rtt_start_date = new Date();
-        System.out.println("RTT Started!");
-        outToServer.writeBytes("RTT" + '\n');
-        serverSentence = inFromServer.readLine();
-        if(serverSentence.equals("RTT")) {
-            rtt_date = new Date();
-            rtt = rtt_date.getTime() - rtt_start_date.getTime();
-            System.out.println("RTT calculated!");
-        }
-
-        clientSocket.close();
-        return rtt;
-    }
-
-    public long calc_time() throws IOException {
-        Date rtt_start_date, rtt_date;
-        long rtt = 0, time = 0;
-        String serverSentence;
-        Socket clientSocket = new Socket(ip, port);
-        DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
-        BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-
-        rtt_start_date = new Date();
+        long rtt_start = TimeCounter.getInstance().getTime();
         System.out.println("Cristian Started!");
         outToServer.writeBytes("TIME" + '\n');
+
         serverSentence = inFromServer.readLine();
+        long rtt = TimeCounter.getInstance().getTime() - rtt_start;
         if(serverSentence.equals("TIME")) {
-            rtt_date = new Date();
-            rtt = rtt_date.getTime() - rtt_start_date.getTime();
             serverSentence = inFromServer.readLine();
             time = Long.valueOf(serverSentence);
             System.out.println("TIME calculated!");
@@ -137,12 +93,5 @@ public class NTPChild {
         clientSocket.close();
         MonitorMain.send_count(2);
         return time + (rtt/2);
-    }
-
-    public void send_or() throws IOException {
-        Socket clientSocket = new Socket(ip, port);
-        DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
-        outToServer.writeBytes("OR" + '\n' + offset + '\n' + rtt);
-        clientSocket.close();
     }
 }
