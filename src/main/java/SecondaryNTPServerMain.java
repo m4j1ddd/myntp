@@ -19,15 +19,7 @@ public class SecondaryNTPServerMain {
             ntpParent.start();
 
             NTPChild ntpChild = new NTPChild(primaryServerIP, primaryServerPort);
-            while(true) {
-                long offset = ntpChild.run_ntp();
-                System.out.println("offset = " + offset);
-                long old_time = TimeCounter.getInstance().getTime();
-                long time = old_time - offset;
-                TimeCounter.getInstance().setTime(time);
-                System.out.println("time = " + time);
-                sleep(20000);
-            }
+            ntpChild.start();
         }
     }
 }

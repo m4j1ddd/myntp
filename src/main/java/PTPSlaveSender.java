@@ -21,16 +21,14 @@ public class PTPSlaveSender extends Thread {
     }
 
     public void run() {
-        DateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy hh:mm:ss.SSS");
         try {
             while (connectionSocket.isConnected()) {
                 DataOutputStream outToMaster = new DataOutputStream(connectionSocket.getOutputStream());
 
-                Date t3_date = new Date();
+                t3 = TimeCounter.getInstance().getTime();
                 System.out.println("T3 established!");
                 if(!connectionSocket.isOutputShutdown()) outToMaster.writeBytes("Delay_Req" + '\n');
-                System.out.println("T3 date = " + dateFormat.format(t3_date));
-                t3 = t3_date.getTime();
+                System.out.println("T3 = " + t3);
 
                 MonitorMain.send_count(1);
                 sleep(6000);

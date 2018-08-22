@@ -32,8 +32,6 @@ public class PTPSlaveReceiver extends Thread {
     }
 
     public void run() {
-        Date t2_date;
-        DateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy hh:mm:ss.SSS");
         try {
             while(connectionSocket.isConnected()) {
                 BufferedReader inFromMaster = new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
@@ -42,10 +40,9 @@ public class PTPSlaveReceiver extends Thread {
                 if(!connectionSocket.isInputShutdown()) masterSentence = inFromMaster.readLine();
                 if(masterSentence != null) {
                     if (masterSentence.equals("Sync")) {
-                        t2_date = new Date();
-                        t2 = t2_date.getTime();
+                        t2 = TimeCounter.getInstance().getTime();
                         System.out.println("T2 established!");
-                        System.out.println("T2 date = " + dateFormat.format(t2_date));
+                        System.out.println("T2 = " + t2);
                     } else if (masterSentence.equals("Follow_Up")) {
                         if(!connectionSocket.isInputShutdown()) masterSentence = inFromMaster.readLine();
                         t1 = Long.valueOf(masterSentence);

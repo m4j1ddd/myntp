@@ -1,5 +1,6 @@
 import java.io.IOException;
 import java.net.Socket;
+import java.util.Date;
 
 public class PTPSlave extends Thread {
     private PTPSlaveReceiver ptpSlaveReceiver;
@@ -24,7 +25,24 @@ public class PTPSlave extends Thread {
     }
 
     public void run() {
-        ptpSlaveReceiver.start();
-        ptpSlaveSender.start();
+        try {
+            ptpSlaveReceiver.start();
+            ptpSlaveSender.start();
+
+            while (true) {
+                long offset = getOffset();
+                System.out.println("offset = " + offset);
+                long old_time = TimeCounter.getInstance().getTime();
+                long time = old_time + offset;
+                TimeCounter.getInstance().setTime(time);
+                System.out.println("time = " + time);
+                MonitorMain.send_sync_time(time);
+                sleep(10000);
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

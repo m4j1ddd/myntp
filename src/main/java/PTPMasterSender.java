@@ -16,16 +16,15 @@ public class PTPMasterSender extends Thread {
     }
 
     public void run() {
-        DateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy hh:mm:ss.SSS");
         try {
             while(connectionSocket.isConnected()) {
                 DataOutputStream outToSlave = new DataOutputStream(connectionSocket.getOutputStream());
 
-                Date t1_date = new Date();
+                long t1 = TimeCounter.getInstance().getTime();
                 System.out.println("T1 established");
                 if(!connectionSocket.isOutputShutdown()) outToSlave.writeBytes("Sync" + '\n');
-                System.out.println("T1 date = " + dateFormat.format(t1_date));
-                if(!connectionSocket.isOutputShutdown()) outToSlave.writeBytes("Follow_Up" + '\n' + t1_date.getTime() + '\n');
+                System.out.println("T1 = " + t1);
+                if(!connectionSocket.isOutputShutdown()) outToSlave.writeBytes("Follow_Up" + '\n' + t1 + '\n');
 
                 MonitorMain.send_count(2);
                 sleep(2000);

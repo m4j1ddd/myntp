@@ -7,13 +7,23 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class NTPChild {
+import static java.lang.Thread.sleep;
+
+public class NTPChild extends Thread {
     private String ip;
     private int port;
+    private boolean isClient;
 
     public NTPChild(String ip, int port) {
         this.ip = ip;
         this.port = port;
+        this.isClient = false;
+    }
+
+    public NTPChild(String ip, int port, boolean isClient) {
+        this.ip = ip;
+        this.port = port;
+        this.isClient = true;
     }
 
     public String getIp() {
@@ -30,6 +40,33 @@ public class NTPChild {
 
     public void setPort(int port) {
         this.port = port;
+    }
+
+    public boolean isClient() {
+        return isClient;
+    }
+
+    public void setClient(boolean client) {
+        isClient = client;
+    }
+
+    public void run() {
+        try {
+            while (true) {
+                long offset = run_ntp();
+                System.out.println("offset = " + offset);
+                long old_time = TimeCounter.getInstance().getTime();
+                long time = old_time - offset;
+                TimeCounter.getInstance().setTime(time);
+                System.out.println("time = " + time);
+                if(isClient) MonitorMain.send_sync_time(time);
+                sleep(20000);
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public long run_ntp() throws IOException {
