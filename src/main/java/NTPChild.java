@@ -54,11 +54,11 @@ public class NTPChild extends Thread {
         try {
             while (true) {
                 long offset = run_ntp();
-                System.out.println("offset = " + offset);
+                if(!isClient) System.out.println("offset = " + offset);
                 long old_time = TimeCounter.getInstance().getTime();
                 long time = old_time - offset;
                 TimeCounter.getInstance().setTime(time);
-                System.out.println("time = " + time);
+                if(!isClient) System.out.println("time = " + time);
                 if(isClient) MonitorMain.send_sync_time(time);
                 sleep(20000);
             }
@@ -76,31 +76,31 @@ public class NTPChild extends Thread {
         DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
         BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
-        System.out.println("NTP Started!");
+        if(!isClient) System.out.println("NTP Started!");
         outToServer.writeBytes("start" + '\n');
 
         serverSentence = inFromServer.readLine();
         tr1 = TimeCounter.getInstance().getTime();
         if(serverSentence.equals("MSG1")) {
-            System.out.println("TR1 established!");
+            if(!isClient) System.out.println("TR1 established!");
 
             ts2 = TimeCounter.getInstance().getTime();
-            System.out.println("TS2 established!");
+            if(!isClient) System.out.println("TS2 established!");
             outToServer.writeBytes("MSG2" + '\n');
 
             serverSentence = inFromServer.readLine();
             if(serverSentence.equals("TS1")) {
                 ts1 = Long.valueOf(inFromServer.readLine());
-                System.out.println("TS1 recieved");
+                if(!isClient) System.out.println("TS1 recieved");
                 serverSentence = inFromServer.readLine();
                 if(serverSentence.equals("TR2")) {
                     tr2 = Long.valueOf(inFromServer.readLine());
-                    System.out.println("TR2 recieved");
+                    if(!isClient) System.out.println("TR2 recieved");
                 }
             }
         }
 
-        System.out.println("TS1 = " + ts1 + ", TR1 = " + tr1 + ", TS2 = " + ts2 + ", TR2 = " + tr2);
+        if(!isClient) System.out.println("TS1 = " + ts1 + ", TR1 = " + tr1 + ", TS2 = " + ts2 + ", TR2 = " + tr2);
         long offset = (tr1 - tr2 + ts2 - ts1)/2;
 
         clientSocket.close();

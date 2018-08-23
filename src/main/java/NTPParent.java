@@ -62,7 +62,7 @@ public class NTPParent extends Thread {
                     if (clientSentence.equals("MSG2")) {
                         System.out.println("TR2 established!");
 
-                        System.out.println("TS1: " + ts1 + "TR2:" + tr2);
+                        System.out.println("TS1: " + ts1 + " TR2: " + tr2);
                         outToClient.writeBytes("TS1" + '\n' + ts1 + '\n' + "TR2" + '\n' + tr2 + '\n');
                     }
                 } else if (clientSentence.equals("RTT")) {
