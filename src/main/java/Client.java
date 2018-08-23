@@ -30,9 +30,9 @@ public class Client extends Thread {
     public void sendMessage(String ip, int port, String msg) throws IOException {
         Socket socket = new Socket(ip, port);
         DataOutputStream outToOther = new DataOutputStream(socket.getOutputStream());
-        Date send_date = new Date();
+        long send_time = TimeCounter.getInstance().getTime();
         outToOther.writeBytes(msg + '\n');
         socket.close();
-        MonitorMain.send_msg_time(send_date.getTime(), msg);
+        MonitorMain.send_msg_time(send_time, msg);
     }
 }

@@ -1,6 +1,7 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.text.DateFormat;
@@ -21,7 +22,6 @@ public class Monitor extends Thread {
     }
 
     public void print_msgs_sorted() {
-        DateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy hh:mm:ss.SSS");
         Collections.sort(messages, new Comparator<Message>() {
             @Override
             public int compare(Message lhs, Message rhs) {
@@ -30,20 +30,15 @@ public class Monitor extends Thread {
             }
         });
         for(int i = 0; i < messages.size(); i++) {
-            System.out.println("Message: " + messages.get(i).getText() + ", Date: " + dateFormat.format(messages.get(i).getDate()));
+            System.out.println("Message: " + messages.get(i).getText() + ", Time: " + messages.get(i).getTime());
         }
     }
 
     public void print_sync_times() {
-        DateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy hh:mm:ss.SSS");
-        int i = 0;
         for(Map.Entry<String, Long> entry : sync_times.entrySet()) {
-            if(i >= 10) break;
             String ip = entry.getKey();
             Long time = entry.getValue();
-            Date sync_date = new Date(time);
-            System.out.println("IP: " + ip + ", Sync date: " + dateFormat.format(sync_date));
-            i++;
+            System.out.println("IP: " + ip + ", Sync time: " + time);
         }
     }
 
@@ -74,7 +69,7 @@ public class Monitor extends Thread {
                     total_count += count;
                 }
                 else if(clientSentence.equals("sync")) {
-                    String ip = connectionSocket.getRemoteSocketAddress().toString();
+                    String ip = (((InetSocketAddress) connectionSocket.getRemoteSocketAddress()).getAddress()).toString().replace("/","");
                     long time = Long.valueOf(inFromClient.readLine());
                     sync_times.put(ip, time);
                 }

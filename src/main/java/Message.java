@@ -24,8 +24,4 @@ public class Message {
     public void setText(String text) {
         this.text = text;
     }
-
-    public Date getDate() {
-        return new Date(time);
-    }
 }
