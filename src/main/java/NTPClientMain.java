@@ -4,7 +4,9 @@ import java.util.Scanner;
 public class NTPClientMain {
     public static void main(String[] args) throws IOException {
         if(args.length >= 3) {
-            if(args.length >= 4)
+            if(args.length >= 5)
+                TimeCounter.getInstance(Long.valueOf(args[3]), Integer.valueOf(args[4])).start();
+            else if(args.length == 4)
                 TimeCounter.getInstance(Long.valueOf(args[3])).start();
             else
                 TimeCounter.getInstance().start();

@@ -13,7 +13,9 @@ import static java.lang.Thread.sleep;
 public class PTPClientMain {
     public static void main(String[] args) throws IOException, InterruptedException {
         if(args.length >= 2) {
-            if(args.length >= 4)
+            if(args.length >= 5)
+                TimeCounter.getInstance(Long.valueOf(args[3]), Integer.valueOf(args[4])).start();
+            else if(args.length == 4)
                 TimeCounter.getInstance(Long.valueOf(args[3])).start();
             else
                 TimeCounter.getInstance().start();
