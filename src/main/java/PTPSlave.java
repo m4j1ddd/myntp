@@ -33,7 +33,7 @@ public class PTPSlave extends Thread {
                 long offset = getOffset();
 //                System.out.println("offset = " + offset);
                 long old_time = TimeCounter.getInstance().getTime();
-                long time = old_time + offset;
+                long time = old_time - offset;
                 TimeCounter.getInstance().setTime(time);
 //                System.out.println("time = " + time);
                 MonitorMain.send_sync_time(time);

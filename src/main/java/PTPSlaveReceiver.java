@@ -44,9 +44,11 @@ public class PTPSlaveReceiver extends Thread {
                 } else if (masterSentence.equals("Follow_Up")) {
                     masterSentence = inFromMaster.readLine();
                     t1 = Long.valueOf(masterSentence);
+//                    System.out.println("T1 = " + t1);
                 } else if (masterSentence.equals("Delay_Resp")) {
                     masterSentence = inFromMaster.readLine();
                     t4 = Long.valueOf(masterSentence);
+//                    System.out.println("T4 = " + t4);
                 }
             }
         } catch (IOException e) {
