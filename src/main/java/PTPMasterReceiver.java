@@ -16,16 +16,15 @@ public class PTPMasterReceiver extends Thread {
 
     public void run() {
         try {
-            while(connectionSocket.isConnected()) {
+            while(true) {
                 DataOutputStream outToSlave = new DataOutputStream(connectionSocket.getOutputStream());
                 BufferedReader inFromSlave = new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
-                String slaveSentence = null;
-                slaveSentence = inFromSlave.readLine();
-                if (slaveSentence != null && slaveSentence.equals("Delay_Req")) {
+                String slaveSentence = inFromSlave.readLine();
+                if (slaveSentence.equals("Delay_Req")) {
                     long t4 = TimeCounter.getInstance().getTime();
                     System.out.println("T4 established!");
                     System.out.println("T4 = " + t4);
-                    if(!connectionSocket.isOutputShutdown()) outToSlave.writeBytes("Delay_Resp" + '\n' + t4 + '\n');
+                    outToSlave.writeBytes("Delay_Resp" + '\n' + t4 + '\n');
                 }
                 MonitorMain.send_count(1);
             }

@@ -13,8 +13,12 @@ public class PTPMaster extends Thread {
         try {
             while(true) {
                 Socket connectionSocket = serverSocket.accept();
-                new PTPMasterSender(connectionSocket).start();
-                new PTPMasterReceiver(connectionSocket).start();
+
+                PTPMasterSender ptpMasterSender = new PTPMasterSender(connectionSocket);
+                ptpMasterSender.start();
+
+                PTPMasterReceiver ptpMasterReceiver = new PTPMasterReceiver(connectionSocket);
+                ptpMasterReceiver.start();
             }
         } catch (IOException e) {
             e.printStackTrace();

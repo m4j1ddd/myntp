@@ -22,13 +22,13 @@ public class PTPSlaveSender extends Thread {
 
     public void run() {
         try {
-            while (connectionSocket.isConnected()) {
+            while (true) {
                 DataOutputStream outToMaster = new DataOutputStream(connectionSocket.getOutputStream());
 
                 t3 = TimeCounter.getInstance().getTime();
-                System.out.println("T3 established!");
-                if(!connectionSocket.isOutputShutdown()) outToMaster.writeBytes("Delay_Req" + '\n');
-                System.out.println("T3 = " + t3);
+//                System.out.println("T3 established!");
+                outToMaster.writeBytes("Delay_Req" + '\n');
+//                System.out.println("T3 = " + t3);
 
                 MonitorMain.send_count(1);
                 sleep(6000);
