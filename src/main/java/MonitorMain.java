@@ -29,20 +29,16 @@ public class MonitorMain {
     }
 
     public static void main(String[] args) throws IOException {
-        if(args.length >= 1) {
-            TimeCounter.getInstance().start();
+        TimeCounter.getInstance().start();
 
-            int port = Integer.valueOf(args[0]);
+        Monitor monitor = new Monitor(monitor_port);
+        monitor.start();
 
-            Monitor monitor = new Monitor(port);
-            monitor.start();
-
-            Scanner scanner = new Scanner(System.in);
-            while(scanner.hasNext()) {
-                String command = scanner.next();
-                if(command.equals("print")) {
-                    monitor.print();
-                }
+        Scanner scanner = new Scanner(System.in);
+        while(scanner.hasNext()) {
+            String command = scanner.next();
+            if(command.equals("print")) {
+                monitor.print();
             }
         }
     }
